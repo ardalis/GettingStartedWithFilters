@@ -29,15 +29,20 @@ namespace IntegrationTests
             _client.DefaultRequestHeaders.Clear();
             _client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
+
         }
 
         [Fact]
         public async Task ReturnsListOfAuthors()
         {
+            // ensure data
+            // TODO: Move this to one location
+            await _client.GetAsync("api/authors/populate");
+
             var response = await _client.GetAsync("/api/authors");
             response.EnsureSuccessStatusCode();
-
-            var result = JsonConvert.DeserializeObject<IEnumerable<Author>>(await response.Content.ReadAsStringAsync());
+            var stringResponse = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<IEnumerable<Author>>(stringResponse);
 
             Assert.Equal(2, result.Count());
         }
