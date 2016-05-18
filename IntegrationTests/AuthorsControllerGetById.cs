@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Filters101;
@@ -8,7 +6,6 @@ using Filters101.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Newtonsoft.Json;
-using System.Linq;
 using Xunit;
 
 namespace IntegrationTests
@@ -35,10 +32,6 @@ namespace IntegrationTests
         [Fact]
         public async Task ReturnsSteveForId1()
         {
-            // ensure data
-            // TODO: Move this to one location
-            //await _client.GetAsync("api/authors/populate");
-
             var response = await _client.GetAsync("/api/authors/1");
             response.EnsureSuccessStatusCode();
             var stringResponse = await response.Content.ReadAsStringAsync();

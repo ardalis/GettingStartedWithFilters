@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -9,12 +8,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Newtonsoft.Json;
 using System.Linq;
-using Filters101.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace IntegrationTests
-{    
+{
     public class AuthorsControllerGet
     {
         private readonly HttpClient _client;
@@ -37,14 +34,10 @@ namespace IntegrationTests
         [Fact]
         public async Task ReturnsListOfAuthors()
         {
-            // ensure data
-            // TODO: Move this to one location
-            // await _client.GetAsync("api/authors/populate");
-
             var response = await _client.GetAsync("/api/authors");
             response.EnsureSuccessStatusCode();
             var stringResponse = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<IEnumerable<Author>>(stringResponse);
+            var result = JsonConvert.DeserializeObject<IEnumerable<Author>>(stringResponse).ToList();
 
             Assert.Equal(2, result.Count());
             Assert.Equal("Steve Smith", result.FirstOrDefault().FullName);

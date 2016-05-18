@@ -44,15 +44,19 @@ namespace Filters101
             ILoggerFactory loggerFactory)
         {
             this.Configure(app, env, loggerFactory);
+            var logger = loggerFactory.CreateLogger<Startup>();
+            logger.LogWarning("ConfigureTesting");
             var authorRepository = app.ApplicationServices
                 .GetService<IAuthorRepository>();
-            PopulateSampleData(authorRepository);
+            PopulateSampleData(authorRepository, logger);
         }
 
-        private void PopulateSampleData(IAuthorRepository authorRepository)
+        private void PopulateSampleData(IAuthorRepository authorRepository,
+            ILogger logger)
         {
             if (!authorRepository.List().Any())
             {
+                logger.LogWarning("No authors - populating...");
                 authorRepository.Add(new Author()
                 {
                     Id = 1,
@@ -70,11 +74,12 @@ namespace Filters101
 
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, 
-            IHostingEnvironment env, 
+        public void Configure(IApplicationBuilder app,
+            IHostingEnvironment env,
             ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+            loggerFactory.AddConsole();
+            //loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
             if (env.IsDevelopment())
