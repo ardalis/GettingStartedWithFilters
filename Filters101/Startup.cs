@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Filters101.Infrastructure.Data;
 using Filters101.Interfaces;
+using Filters101.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -28,7 +29,7 @@ namespace Filters101
         public IConfigurationRoot Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public virtual void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<AppDbContext>(options =>
                 options.UseInMemoryDatabase());
@@ -38,8 +39,40 @@ namespace Filters101
             services.AddScoped<IAuthorRepository, AuthorRepository>();
         }
 
+        public void ConfigureTesting(IApplicationBuilder app,
+            IHostingEnvironment env,
+            ILoggerFactory loggerFactory)
+        {
+            this.Configure(app, env, loggerFactory);
+            var authorRepository = app.ApplicationServices
+                .GetService<IAuthorRepository>();
+            PopulateSampleData(authorRepository);
+        }
+
+        private void PopulateSampleData(IAuthorRepository authorRepository)
+        {
+            if (!authorRepository.List().Any())
+            {
+                authorRepository.Add(new Author()
+                {
+                    Id = 1,
+                    FullName = "Steve Smith",
+                    TwitterAlias = "ardalis"
+                });
+                authorRepository.Add(new Author()
+                {
+                    Id = 2,
+                    FullName = "Neil Gaiman",
+                    TwitterAlias = "neilhimself"
+                });
+            }
+        }
+
+
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, 
+            IHostingEnvironment env, 
+            ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();

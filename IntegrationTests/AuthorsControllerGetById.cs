@@ -9,17 +9,16 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Newtonsoft.Json;
 using System.Linq;
-using Filters101.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace IntegrationTests
-{    
-    public class AuthorsControllerGet
+{
+    
+    public class AuthorsControllerGetById
     {
         private readonly HttpClient _client;
 
-        public AuthorsControllerGet()
+        public AuthorsControllerGetById()
         {
             var builder = new WebHostBuilder()
                 .UseStartup<Startup>()
@@ -31,23 +30,21 @@ namespace IntegrationTests
             _client.DefaultRequestHeaders.Clear();
             _client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
-
         }
 
         [Fact]
-        public async Task ReturnsListOfAuthors()
+        public async Task ReturnsSteveForId1()
         {
             // ensure data
             // TODO: Move this to one location
-            // await _client.GetAsync("api/authors/populate");
+            //await _client.GetAsync("api/authors/populate");
 
-            var response = await _client.GetAsync("/api/authors");
+            var response = await _client.GetAsync("/api/authors/1");
             response.EnsureSuccessStatusCode();
             var stringResponse = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<IEnumerable<Author>>(stringResponse);
+            var result = JsonConvert.DeserializeObject<Author>(stringResponse);
 
-            Assert.Equal(2, result.Count());
-            Assert.Equal("Steve Smith", result.FirstOrDefault().FullName);
+            Assert.Equal("Steve Smith", result.FullName);
         }
     }
 }
