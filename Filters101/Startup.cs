@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Filters101.Filters;
 using Filters101.Infrastructure.Data;
 using Filters101.Interfaces;
 using Filters101.Models;
@@ -34,7 +35,7 @@ namespace Filters101
             services.AddDbContext<AppDbContext>(options =>
                 options.UseInMemoryDatabase());
             // Add framework services.
-            services.AddMvc();
+            services.AddMvc(options => options.Filters.Add(new DurationActionFilter()));
 
             services.AddScoped<IAuthorRepository, AuthorRepository>();
         }
