@@ -24,7 +24,7 @@ namespace Filters101.Infrastructure.Data
 
         public IEnumerable<Author> List()
         {
-            return _dbContext.Authors;
+            return _dbContext.Authors.AsNoTracking();
         }
 
         public void Update(Author author)

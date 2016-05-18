@@ -58,6 +58,7 @@ namespace Filters101.Controllers
             {
                 return BadRequest(ModelState);
             }
+            author.Id = id;
             _authorRepository.Update(author);
             return Ok();
         }

@@ -42,6 +42,7 @@ namespace Filters101.Controllers
 
         // PUT api/authors2/5
         [HttpPut("{id}")]
+        [ValidateAuthorExists]
         public IActionResult Put(int id, [FromBody]Author author)
         {
             _authorRepository.Update(author);

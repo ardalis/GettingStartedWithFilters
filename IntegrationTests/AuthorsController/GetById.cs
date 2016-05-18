@@ -28,6 +28,7 @@ namespace IntegrationTests.AuthorsController
 
             Assert.Equal("Steve Smith", result.FullName);
         }
+
         [Theory]
         [InlineData("authors")]
         [InlineData("authors2")]
