@@ -44,19 +44,15 @@ namespace Filters101
             ILoggerFactory loggerFactory)
         {
             this.Configure(app, env, loggerFactory);
-            var logger = loggerFactory.CreateLogger<Startup>();
-            logger.LogWarning("ConfigureTesting");
             var authorRepository = app.ApplicationServices
                 .GetService<IAuthorRepository>();
-            PopulateSampleData(authorRepository, logger);
+            PopulateSampleData(authorRepository);
         }
 
-        private void PopulateSampleData(IAuthorRepository authorRepository,
-            ILogger logger)
+        private void PopulateSampleData(IAuthorRepository authorRepository)
         {
             if (!authorRepository.List().Any())
             {
-                logger.LogWarning("No authors - populating...");
                 authorRepository.Add(new Author()
                 {
                     Id = 1,
