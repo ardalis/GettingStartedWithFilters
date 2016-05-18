@@ -28,7 +28,8 @@ namespace IntegrationTests.AuthorsController
             var result = JsonConvert.DeserializeObject<IEnumerable<Author>>(stringResponse).ToList();
 
             Assert.Equal(2, result.Count());
-            Assert.Equal("Steve Smith", result.FirstOrDefault().FullName);
+            Assert.Equal(1, result.Count(a => a.FullName == "Steve Smith"));
+            Assert.Equal(1, result.Count(a => a.FullName == "Neil Gaiman"));
         }
     }
 }

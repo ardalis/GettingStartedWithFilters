@@ -51,21 +51,21 @@ namespace Filters101
 
         private void PopulateSampleData(IAuthorRepository authorRepository)
         {
-            if (!authorRepository.List().Any())
+            var authors = authorRepository.List();
+            foreach (var author in authors)
             {
-                authorRepository.Add(new Author()
-                {
-                    Id = 1,
-                    FullName = "Steve Smith",
-                    TwitterAlias = "ardalis"
-                });
-                authorRepository.Add(new Author()
-                {
-                    Id = 2,
-                    FullName = "Neil Gaiman",
-                    TwitterAlias = "neilhimself"
-                });
+                authorRepository.Delete(author.Id);
             }
+            authorRepository.Add(new Author()
+            {
+                FullName = "Steve Smith",
+                TwitterAlias = "ardalis"
+            });
+            authorRepository.Add(new Author()
+            {
+                FullName = "Neil Gaiman",
+                TwitterAlias = "neilhimself"
+            });
         }
 
 

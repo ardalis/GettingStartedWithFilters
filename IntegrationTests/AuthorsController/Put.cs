@@ -93,12 +93,6 @@ namespace IntegrationTests.AuthorsController
             var jsonContent = new StringContent(JsonConvert.SerializeObject(authorToPost), Encoding.UTF8, "application/json");
             var response = await _client.PutAsync($"/api/{controllerName}/1", jsonContent);
             response.EnsureSuccessStatusCode();
-
-            //var stringResponse = await response.Content.ReadAsStringAsync();
-            //var author = JsonConvert.DeserializeObject<Author>(stringResponse);
-
-            //Assert.Equal("John Doe", author.FullName);
-            //Assert.True(author.Id > 0);
         }
     }
 }
