@@ -35,6 +35,15 @@ namespace Filters101.Infrastructure.Data
 
         public void Add(Author author)
         {
+            if (!_dbContext.Authors.Any())
+            {
+                author.Id = 1;
+            }
+            else
+            {
+                int maxId = _dbContext.Authors.Max(a => a.Id);
+                author.Id = maxId + 1;
+            }
             _dbContext.Authors.Add(author);
             _dbContext.SaveChanges();
         }

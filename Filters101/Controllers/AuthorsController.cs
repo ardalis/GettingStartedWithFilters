@@ -43,7 +43,7 @@ namespace Filters101.Controllers
                 return BadRequest(ModelState);
             }
             _authorRepository.Add(author);
-            return Ok();
+            return Ok(author);
         }
 
         // PUT api/authors/5

@@ -37,7 +37,7 @@ namespace Filters101.Controllers
         public IActionResult Post([FromBody]Author author)
         {
             _authorRepository.Add(author);
-            return Ok();
+            return Ok(author);
         }
 
         // PUT api/authors2/5
