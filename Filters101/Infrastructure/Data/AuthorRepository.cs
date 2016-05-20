@@ -17,23 +17,23 @@ namespace Filters101.Infrastructure.Data
             _dbContext = dbContext;
         }
 
-        public Author GetById(int id)
+        public async Task<Author> GetByIdAsync(int id)
         {
-            return _dbContext.Authors.FirstOrDefault(a => a.Id == id);
+            return await _dbContext.Authors.FirstOrDefaultAsync(a => a.Id == id);
         }
 
-        public IEnumerable<Author> List()
+        public async Task<List<Author>> ListAsync()
         {
-            return _dbContext.Authors.AsNoTracking();
+            return await _dbContext.Authors.AsNoTracking().ToListAsync();
         }
 
-        public void Update(Author author)
+        public async Task UpdateAsync(Author author)
         {
             _dbContext.Entry(author).State = EntityState.Modified;
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
         }
 
-        public void Add(Author author)
+        public async Task AddAsync(Author author)
         {
             if (!_dbContext.Authors.Any())
             {
@@ -45,14 +45,14 @@ namespace Filters101.Infrastructure.Data
                 author.Id = maxId + 1;
             }
             _dbContext.Authors.Add(author);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
             var author = _dbContext.Authors.FirstOrDefault(a => a.Id == id);
             _dbContext.Authors.Remove(author);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

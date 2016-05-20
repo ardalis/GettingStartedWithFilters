@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading.Tasks;
 using Filters101.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -11,7 +12,7 @@ namespace Filters101.Filters
         {
         }
 
-        private class ValidateAuthorExistsFilterImpl : IActionFilter
+        private class ValidateAuthorExistsFilterImpl : IAsyncActionFilter
         {
             private readonly IAuthorRepository _authorRepository;
 
@@ -20,23 +21,21 @@ namespace Filters101.Filters
                 _authorRepository = authorRepository;
             }
 
-            public void OnActionExecuting(ActionExecutingContext context)
+            public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
             {
                 if (context.ActionArguments.ContainsKey("id"))
                 {
                     var id = context.ActionArguments["id"] as int?;
                     if (id.HasValue)
                     {
-                        if (_authorRepository.List().All(a => a.Id != id.Value))
+                        if ((await _authorRepository.ListAsync()).All(a => a.Id != id.Value))
                         {
                             context.Result = new NotFoundObjectResult(id.Value);
+                            return;
                         }
                     }
                 }
-            }
-
-            public void OnActionExecuted(ActionExecutedContext context)
-            {
+                await next();
             }
         }
     }

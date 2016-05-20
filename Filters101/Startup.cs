@@ -45,29 +45,54 @@ namespace Filters101
             ILoggerFactory loggerFactory)
         {
             this.Configure(app, env, loggerFactory);
-            var authorRepository = app.ApplicationServices
-                .GetService<IAuthorRepository>();
-            PopulateSampleData(authorRepository);
+            PopulateTestData(app);
+            //var authorRepository = app.ApplicationServices
+            //    .GetService<IAuthorRepository>();
+            //Task.Run(() => PopulateSampleData(authorRepository));
         }
 
-        private void PopulateSampleData(IAuthorRepository authorRepository)
+        private void PopulateTestData(IApplicationBuilder app)
         {
-            var authors = authorRepository.List();
+            var dbContext = app.ApplicationServices.GetService<AppDbContext>();
+            var authors = dbContext.Authors;
             foreach (var author in authors)
             {
-                authorRepository.Delete(author.Id);
+                dbContext.Remove(author);
             }
-            authorRepository.Add(new Author()
+            dbContext.SaveChanges();
+            dbContext.Authors.Add(new Author()
             {
+                Id=1,
                 FullName = "Steve Smith",
                 TwitterAlias = "ardalis"
             });
-            authorRepository.Add(new Author()
+            dbContext.Authors.Add(new Author()
             {
+                Id=2,
                 FullName = "Neil Gaiman",
                 TwitterAlias = "neilhimself"
             });
+            dbContext.SaveChanges();
         }
+
+        //private async Task PopulateSampleData(IAuthorRepository authorRepository)
+        //{
+        //    var authors = await authorRepository.ListAsync();
+        //    foreach (var author in authors)
+        //    {
+        //        await authorRepository.DeleteAsync(author.Id);
+        //    }
+        //    await authorRepository.AddAsync(new Author()
+        //    {
+        //        FullName = "Steve Smith",
+        //        TwitterAlias = "ardalis"
+        //    });
+        //    await authorRepository.AddAsync(new Author()
+        //    {
+        //        FullName = "Neil Gaiman",
+        //        TwitterAlias = "neilhimself"
+        //    });
+        //}
 
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

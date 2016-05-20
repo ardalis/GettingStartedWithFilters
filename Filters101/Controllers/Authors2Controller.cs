@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Filters101.Models;
 using Microsoft.AspNetCore.Mvc;
 using Filters101.Filters;
@@ -19,42 +20,42 @@ namespace Filters101.Controllers
 
         // GET: api/authors2
         [HttpGet]
-        public IEnumerable<Author> Get()
+        public async Task<List<Author>> Get()
         {
-            return _authorRepository.List();
+            return await _authorRepository.ListAsync();
         }
 
         // GET api/authors2/5
         [HttpGet("{id}")]
         [ValidateAuthorExists]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            return Ok(_authorRepository.GetById(id));
+            return Ok(await _authorRepository.GetByIdAsync(id));
         }
 
         // POST api/authors2
         [HttpPost]
-        public IActionResult Post([FromBody]Author author)
+        public async Task<IActionResult> Post([FromBody]Author author)
         {
-            _authorRepository.Add(author);
+            await _authorRepository.AddAsync(author);
             return Ok(author);
         }
 
         // PUT api/authors2/5
         [HttpPut("{id}")]
         [ValidateAuthorExists]
-        public IActionResult Put(int id, [FromBody]Author author)
+        public async Task<IActionResult> Put(int id, [FromBody]Author author)
         {
-            _authorRepository.Update(author);
+            await _authorRepository.UpdateAsync(author);
             return Ok();
         }
 
         // DELETE api/authors2/5
         [HttpDelete("{id}")]
         [ValidateAuthorExists]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            _authorRepository.Delete(id);
+            await _authorRepository.DeleteAsync(id);
             return Ok();
         }
     }

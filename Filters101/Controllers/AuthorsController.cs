@@ -2,6 +2,7 @@
 using Filters101.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using System.Threading.Tasks;
 using Filters101.Interfaces;
 
 namespace Filters101.Controllers
@@ -18,39 +19,39 @@ namespace Filters101.Controllers
 
         // GET: api/authors
         [HttpGet]
-        public IEnumerable<Author> Get()
+        public async Task<List<Author>> Get()
         {
-            return _authorRepository.List();
+            return await _authorRepository.ListAsync();
         }
 
         // GET api/authors/5
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            if (_authorRepository.List().All(a => a.Id != id))
+            if ((await _authorRepository.ListAsync()).All(a => a.Id != id))
             {
                 return NotFound(id);
             }
-            return Ok(_authorRepository.GetById(id));
+            return Ok(await _authorRepository.GetByIdAsync(id));
         }
 
         // POST api/authors
         [HttpPost]
-        public IActionResult Post([FromBody]Author author)
+        public async Task<IActionResult> Post([FromBody]Author author)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            _authorRepository.Add(author);
+            await _authorRepository.AddAsync(author);
             return Ok(author);
         }
 
         // PUT api/authors/5
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody]Author author)
+        public async Task<IActionResult> Put(int id, [FromBody]Author author)
         {
-            if (_authorRepository.List().All(a => a.Id != id))
+            if ((await _authorRepository.ListAsync()).All(a => a.Id != id))
             {
                 return NotFound(id);
             }
@@ -59,35 +60,35 @@ namespace Filters101.Controllers
                 return BadRequest(ModelState);
             }
             author.Id = id;
-            _authorRepository.Update(author);
+            await _authorRepository.UpdateAsync(author);
             return Ok();
         }
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (_authorRepository.List().All(a => a.Id != id))
+            if ((await _authorRepository.ListAsync()).All(a => a.Id != id))
             {
                 return NotFound(id);
             }
-            _authorRepository.Delete(id);
+            await _authorRepository.DeleteAsync(id);
             return Ok();
         }
 
         // GET: api/authors/populate
         [HttpGet("Populate")]
-        public IActionResult Populate()
+        public async Task<IActionResult> Populate()
         {
-            if (!_authorRepository.List().Any())
+            if (!(await _authorRepository.ListAsync()).Any())
             {
-                _authorRepository.Add(new Author()
+                await _authorRepository.AddAsync(new Author()
                 {
                     Id = 1,
                     FullName = "Steve Smith",
                     TwitterAlias = "ardalis"
                 });
-                _authorRepository.Add(new Author()
+                await _authorRepository.AddAsync(new Author()
                 {
                     Id = 2,
                     FullName = "Neil Gaiman",
