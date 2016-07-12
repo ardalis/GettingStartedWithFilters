@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System.IO;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using Filters101;
 using Microsoft.AspNetCore.Hosting;
@@ -11,6 +12,7 @@ namespace IntegrationTests
         protected HttpClient GetClient()
         {
             var builder = new WebHostBuilder()
+                .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseStartup<Startup>()
                 .UseEnvironment("Testing");
             var server = new TestServer(builder);
