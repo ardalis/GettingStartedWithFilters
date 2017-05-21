@@ -100,8 +100,8 @@ namespace Filters101
             IHostingEnvironment env,
             ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddConsole();
-            //loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+            //loggerFactory.AddConsole();
+            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
             if (env.IsDevelopment())

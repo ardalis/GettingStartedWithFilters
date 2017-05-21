@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 namespace Filters101.Controllers
 {
     [OrderLoggingActionFilter(Name = "Class Level Attribute")]
+    [TypeFilter(typeof(OrderLoggingActionFilter), Arguments = new object[] { "Class Attribute" })]
     public class OrderingController : Controller
     {
         private readonly ILogger _logger;
