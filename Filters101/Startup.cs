@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Filters101.Infrastructure.Services;
 
 namespace Filters101
 {
@@ -38,6 +39,9 @@ namespace Filters101
             services.AddMvc(options => options.Filters.Add(new DurationActionFilter()));
 
             services.AddScoped<IAuthorRepository, AuthorRepository>();
+
+            services.AddTransient<RandomNumberProviderFilter>();
+            services.AddTransient<RandomNumberService>();
         }
 
         public void ConfigureTesting(IApplicationBuilder app,

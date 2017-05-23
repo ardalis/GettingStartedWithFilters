@@ -16,6 +16,18 @@ namespace IntegrationTests.AuthorsController
             _client = base.GetClient();
         }
 
+        [Fact]
+        public async Task ReturnsNotFoundForId0SingleTest()
+        {
+            var response = await _client.GetAsync("/api/authors/0");
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+            var stringResponse = await response.Content.ReadAsStringAsync();
+
+            Assert.Equal("0", stringResponse);
+        }
+
+
         [Theory]
         [InlineData("authors")]
         [InlineData("authors2")]
