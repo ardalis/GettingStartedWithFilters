@@ -1,12 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Filters101.Models;
 using Newtonsoft.Json;
 using System.Text;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Xunit;
 
 namespace IntegrationTests.AuthorsController

@@ -20,7 +20,7 @@ namespace Filters101.Controllers
 
         // GET: api/authors2
         [HttpGet]
-        public async Task<List<Author>> Get()
+        public async Task<ActionResult<List<Author>>> Get()
         {
             return await _authorRepository.ListAsync();
         }
@@ -28,14 +28,14 @@ namespace Filters101.Controllers
         // GET api/authors2/5
         [HttpGet("{id}")]
         [ValidateAuthorExists]
-        public async Task<IActionResult> Get(int id)
+        public async Task<ActionResult<Author>> Get(int id)
         {
             return Ok(await _authorRepository.GetByIdAsync(id));
         }
 
         // POST api/authors2
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody]Author author)
+        public async Task<ActionResult<Author>> Post([FromBody]Author author)
         {
             await _authorRepository.AddAsync(author);
             return Ok(author);
@@ -44,7 +44,7 @@ namespace Filters101.Controllers
         // PUT api/authors2/5
         [HttpPut("{id}")]
         [ValidateAuthorExists]
-        public async Task<IActionResult> Put(int id, [FromBody]Author author)
+        public async Task<ActionResult<Author>> Put(int id, [FromBody]Author author)
         {
             await _authorRepository.UpdateAsync(author);
             return Ok();

@@ -11,5 +11,6 @@ namespace Filters101.Models
         public string FullName { get; set; }
         [MaxLength(30)]
         public string TwitterAlias { get; set; }
+        public bool IsEditor { get; set; } // author shouldn't be able to set this
     }
 }

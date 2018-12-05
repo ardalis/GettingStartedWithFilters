@@ -19,13 +19,14 @@ namespace Filters101.Controllers
 
         // GET: api/authors
         [HttpGet]
-        public async Task<List<Author>> Get()
+        public async Task<ActionResult<List<Author>>> Get()
         {
             return await _authorRepository.ListAsync();
         }
 
         // GET api/authors/5
         [HttpGet("{id}")]
+        //[ProducesResponseType(200, Type=typeof(Author))]
         public async Task<IActionResult> Get(int id)
         {
             if ((await _authorRepository.ListAsync()).All(a => a.Id != id))
@@ -37,7 +38,7 @@ namespace Filters101.Controllers
 
         // POST api/authors
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody]Author author)
+        public async Task<ActionResult<Author>> Post([FromBody]Author author)
         {
             if (!ModelState.IsValid)
             {
@@ -49,7 +50,7 @@ namespace Filters101.Controllers
 
         // PUT api/authors/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody]Author author)
+        public async Task<ActionResult<Author>> Put(int id, [FromBody]Author author)
         {
             if ((await _authorRepository.ListAsync()).All(a => a.Id != id))
             {

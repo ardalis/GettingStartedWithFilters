@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Filters101.Filters;
+﻿using Filters101.Filters;
 using Filters101.Infrastructure.Data;
 using Filters101.Interfaces;
 using Filters101.Models;
@@ -11,8 +7,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Filters101.Infrastructure.Services;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace Filters101
 {
@@ -34,9 +30,14 @@ namespace Filters101
         public virtual void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<AppDbContext>(options =>
-                options.UseInMemoryDatabase());
+                options.UseInMemoryDatabase("db"));
             // Add framework services.
             services.AddMvc(options => options.Filters.Add(new DurationActionFilter()));
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
+            });
 
             services.AddScoped<IAuthorRepository, AuthorRepository>();
 
@@ -45,10 +46,9 @@ namespace Filters101
         }
 
         public void ConfigureTesting(IApplicationBuilder app,
-            IHostingEnvironment env,
-            ILoggerFactory loggerFactory)
+            IHostingEnvironment env)
         {
-            this.Configure(app, env, loggerFactory);
+            this.Configure(app, env);
             PopulateTestData(app);
             //var authorRepository = app.ApplicationServices
             //    .GetService<IAuthorRepository>();
@@ -79,39 +79,13 @@ namespace Filters101
             dbContext.SaveChanges();
         }
 
-        //private async Task PopulateSampleData(IAuthorRepository authorRepository)
-        //{
-        //    var authors = await authorRepository.ListAsync();
-        //    foreach (var author in authors)
-        //    {
-        //        await authorRepository.DeleteAsync(author.Id);
-        //    }
-        //    await authorRepository.AddAsync(new Author()
-        //    {
-        //        FullName = "Steve Smith",
-        //        TwitterAlias = "ardalis"
-        //    });
-        //    await authorRepository.AddAsync(new Author()
-        //    {
-        //        FullName = "Neil Gaiman",
-        //        TwitterAlias = "neilhimself"
-        //    });
-        //}
-
-
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app,
-            IHostingEnvironment env,
-            ILoggerFactory loggerFactory)
+            IHostingEnvironment env)
         {
-            //loggerFactory.AddConsole();
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseBrowserLink();
             }
             else
             {
@@ -119,6 +93,16 @@ namespace Filters101
             }
 
             app.UseStaticFiles();
+
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
 
             app.UseMvc(routes =>
             {
