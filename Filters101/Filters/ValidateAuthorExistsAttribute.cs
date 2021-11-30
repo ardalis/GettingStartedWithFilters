@@ -1,6 +1,6 @@
-using System.Linq;
 using System.Threading.Tasks;
 using Filters101.Interfaces;
+using Filters101.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -8,7 +8,7 @@ namespace Filters101.Filters
 {
     public class ValidateAuthorExistsAttribute : TypeFilterAttribute
     {
-        public ValidateAuthorExistsAttribute():base(typeof(ValidateAuthorExistsFilterImpl))
+        public ValidateAuthorExistsAttribute() : base(typeof(ValidateAuthorExistsFilterImpl))
         {
         }
 
@@ -21,18 +21,28 @@ namespace Filters101.Filters
                 _authorRepository = authorRepository;
             }
 
-            public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+            public async Task OnActionExecutionAsync(ActionExecutingContext context,
+                ActionExecutionDelegate next)
             {
+                int? authorId = null;
                 if (context.ActionArguments.ContainsKey("id"))
                 {
-                    var id = context.ActionArguments["id"] as int?;
-                    if (id.HasValue)
+                    authorId = context.ActionArguments["id"] as int?;
+                }
+                if (context.ActionArguments.ContainsKey("author"))
+                {
+                    var author = context.ActionArguments["author"] as Author;
+                    if (author != null)
                     {
-                        if ((await _authorRepository.ListAsync()).All(a => a.Id != id.Value))
-                        {
-                            context.Result = new NotFoundObjectResult(id.Value);
-                            return;
-                        }
+                        authorId = author.Id;
+                    }
+                }
+                if (authorId.HasValue)
+                {
+                    if (await _authorRepository.GetByIdAsync(authorId.Value) == null)
+                    {
+                        context.Result = new NotFoundObjectResult(authorId.Value);
+                        return;
                     }
                 }
                 await next();

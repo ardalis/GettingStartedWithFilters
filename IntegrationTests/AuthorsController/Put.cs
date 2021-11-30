@@ -24,7 +24,7 @@ namespace IntegrationTests.AuthorsController
         {
             var authorToPost = new Author() { Id = 0, FullName = "test", TwitterAlias = "test" };
             var jsonContent = new StringContent(JsonConvert.SerializeObject(authorToPost), Encoding.UTF8, "application/json");
-            var response = await _client.PutAsync($"/api/{controllerName}/0", jsonContent);
+            var response = await _client.PutAsync($"/api/{controllerName}", jsonContent);
 
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
             var stringResponse = await response.Content.ReadAsStringAsync();
@@ -40,7 +40,7 @@ namespace IntegrationTests.AuthorsController
         {
             var authorToPost = new Author() {Id=1, FullName = "", TwitterAlias = "test"};
             var jsonContent = new StringContent(JsonConvert.SerializeObject(authorToPost), Encoding.UTF8, "application/json");
-            var response = await _client.PutAsync($"/api/{controllerName}/1", jsonContent);
+            var response = await _client.PutAsync($"/api/{controllerName}", jsonContent);
 
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
 
@@ -56,7 +56,7 @@ namespace IntegrationTests.AuthorsController
         {
             var authorToPost = new Author() { Id=1,FullName = "12345678901234567890123456789012345678901234567890a", TwitterAlias = "test" };
             var jsonContent = new StringContent(JsonConvert.SerializeObject(authorToPost), Encoding.UTF8, "application/json");
-            var response = await _client.PutAsync($"/api/{controllerName}/1", jsonContent);
+            var response = await _client.PutAsync($"/api/{controllerName}", jsonContent);
 
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
 
@@ -72,7 +72,7 @@ namespace IntegrationTests.AuthorsController
         {
             var authorToPost = new Author() { Id=1,FullName = "test", TwitterAlias = "123456789012345678901234567890a" };
             var jsonContent = new StringContent(JsonConvert.SerializeObject(authorToPost), Encoding.UTF8, "application/json");
-            var response = await _client.PutAsync($"/api/{controllerName}/1", jsonContent);
+            var response = await _client.PutAsync($"/api/{controllerName}", jsonContent);
 
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
 
@@ -88,7 +88,7 @@ namespace IntegrationTests.AuthorsController
         {
             var authorToPost = new Author() { Id=1,FullName = "John Doe", TwitterAlias = "johndoe" };
             var jsonContent = new StringContent(JsonConvert.SerializeObject(authorToPost), Encoding.UTF8, "application/json");
-            var response = await _client.PutAsync($"/api/{controllerName}/1", jsonContent);
+            var response = await _client.PutAsync($"/api/{controllerName}", jsonContent);
             response.EnsureSuccessStatusCode();
         }
     }

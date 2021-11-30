@@ -41,11 +41,15 @@ namespace Filters101.Controllers
             return Ok(author);
         }
 
-        // PUT api/authors2/5
-        [HttpPut("{id}")]
+        // PUT api/authors2
+        [HttpPut]
         [ValidateAuthorExists]
-        public async Task<ActionResult<Author>> Put(int id, [FromBody]Author author)
+        public async Task<ActionResult<Author>> Put([FromBody]Author author)
         {
+            var authorToUpdate = await _authorRepository.GetByIdAsync(author.Id);
+            authorToUpdate.FullName = author.FullName;
+            authorToUpdate.TwitterAlias = author.TwitterAlias;
+
             await _authorRepository.UpdateAsync(author);
             return Ok();
         }

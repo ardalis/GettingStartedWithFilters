@@ -19,7 +19,7 @@ namespace Filters101.Infrastructure.Data
 
         public async Task<Author> GetByIdAsync(int id)
         {
-            return await _dbContext.Authors.FirstOrDefaultAsync(a => a.Id == id);
+            return await _dbContext.Authors.FindAsync(id);
         }
 
         public async Task<List<Author>> ListAsync()
@@ -29,7 +29,7 @@ namespace Filters101.Infrastructure.Data
 
         public async Task UpdateAsync(Author author)
         {
-            _dbContext.Entry(author).State = EntityState.Modified;
+            //_dbContext.Entry(author).State = EntityState.Modified;
             await _dbContext.SaveChangesAsync();
         }
 

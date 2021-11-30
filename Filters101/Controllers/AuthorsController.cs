@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
 using Filters101.Interfaces;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Filters101.Controllers
 {
@@ -29,11 +30,12 @@ namespace Filters101.Controllers
         //[ProducesResponseType(200, Type=typeof(Author))]
         public async Task<IActionResult> Get(int id)
         {
-            if ((await _authorRepository.ListAsync()).All(a => a.Id != id))
+            var author = await _authorRepository.GetByIdAsync(id);
+            if (author == null)
             {
                 return NotFound(id);
             }
-            return Ok(await _authorRepository.GetByIdAsync(id));
+            return Ok(author);
         }
 
         // POST api/authors
@@ -48,20 +50,22 @@ namespace Filters101.Controllers
             return Ok(author);
         }
 
-        // PUT api/authors/5
-        [HttpPut("{id}")]
-        public async Task<ActionResult<Author>> Put(int id, [FromBody]Author author)
+        // PUT api/authors
+        [HttpPut()]
+        public async Task<ActionResult<Author>> Put([FromBody]Author author)
         {
-            if ((await _authorRepository.ListAsync()).All(a => a.Id != id))
+            var authorToUpdate = await _authorRepository.GetByIdAsync(author.Id);
+            if (authorToUpdate == null)
             {
-                return NotFound(id);
+                return NotFound(author.Id);
             }
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            author.Id = id;
-            await _authorRepository.UpdateAsync(author);
+            authorToUpdate.FullName = author.FullName;
+            authorToUpdate.TwitterAlias = author.TwitterAlias;
+            await _authorRepository.UpdateAsync(authorToUpdate);
             return Ok();
         }
 
@@ -69,12 +73,23 @@ namespace Filters101.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            if ((await _authorRepository.ListAsync()).All(a => a.Id != id))
+            var author = await _authorRepository.GetByIdAsync(id);
+            if (author == null)
             {
                 return NotFound(id);
             }
             await _authorRepository.DeleteAsync(id);
             return Ok();
+        }
+
+        // equivalent to a controller-specific action filter 👇
+        public override async Task OnActionExecutionAsync(ActionExecutingContext context, 
+            ActionExecutionDelegate next)
+        {
+            // do work
+            await next();
+
+            // do other work
         }
 
         // GET: api/authors/populate
