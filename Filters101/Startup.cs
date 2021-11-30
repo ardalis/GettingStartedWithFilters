@@ -8,22 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Filters101.Infrastructure.Services;
-using Swashbuckle.AspNetCore.Swagger;
 
 namespace Filters101
 {
     public class Startup
     {
-        public Startup(IHostingEnvironment env)
-        {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
-                .AddEnvironmentVariables();
-            Configuration = builder.Build();
-        }
-
         public IConfigurationRoot Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -32,15 +21,11 @@ namespace Filters101
             services.AddDbContext<AppDbContext>(options =>
                 options.UseInMemoryDatabase("db"));
             // Add framework services.
-            services.AddMvc(options => options.Filters.Add(new DurationActionFilter()));
-
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
-            });
+            services.AddControllers(options => options.Filters.Add(new DurationActionFilter()));
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen();
 
             services.AddScoped<IAuthorRepository, AuthorRepository>();
-
             services.AddTransient<RandomNumberProviderFilter>();
             services.AddTransient<RandomNumberService>();
         }
@@ -50,9 +35,6 @@ namespace Filters101
         {
             this.Configure(app, env);
             PopulateTestData(app);
-            //var authorRepository = app.ApplicationServices
-            //    .GetService<IAuthorRepository>();
-            //Task.Run(() => PopulateSampleData(authorRepository));
         }
 
         private void PopulateTestData(IApplicationBuilder app)
@@ -86,6 +68,8 @@ namespace Filters101
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI();
             }
             else
             {
@@ -94,21 +78,11 @@ namespace Filters101
 
             app.UseStaticFiles();
 
-            // Enable middleware to serve generated Swagger as a JSON endpoint.
-            app.UseSwagger();
+            app.UseRouting();
 
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
-            // specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
+            app.UseEndpoints(endpoints =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-            });
-
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllers();
             });
         }
     }
